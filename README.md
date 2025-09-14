@@ -4,7 +4,7 @@ Sistema web desarrollado en Next.js con Tailwind CSS para la gestión de manteni
 
 ## 🚀 Características
 
-- **Next.js 14** con App Router
+- **Next.js 14** con App Router.
 - **TypeScript** para tipado estático
 - **Tailwind CSS** para estilos
 - **Lucide React** para iconos
