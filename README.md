@@ -1,36 +1,145 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sistema de Gestión de Mantenimiento - Transporte Público
 
-## Getting Started
+Sistema web desarrollado en Next.js con Tailwind CSS para la gestión de mantenimiento de vehículos de transporte público.
 
-First, run the development server:
+## 🚀 Características
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Next.js 14** con App Router
+- **TypeScript** para tipado estático
+- **Tailwind CSS** para estilos
+- **Lucide React** para iconos
+- **Context API** para manejo de estado
+- **Diseño responsivo** y moderno
+
+## 👥 Roles del Sistema
+
+### 🏢 Empresa (Administrador)
+- Carga de vehículos y mantenimientos
+- Subida de reportes mensuales (1 por mes máximo)
+- Gestión completa de datos
+- Acceso a todas las funcionalidades
+
+### 👁️ Auditor
+- Solo lectura de toda la información
+- Acceso a reportes y consultas
+- No puede modificar datos
+
+### 🔍 Inspector
+- Solo lectura de información específica
+- Acceso limitado a: Licencia, RTO, Cámaras, Aire Acondicionado, Calefacción y Seguro
+- Vista especializada para inspecciones
+
+## 🔐 Cuentas de Demostración
+
+### Empresa (Administrador)
+```
+Email: admin@empresa.com
+Contraseña: 123456
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Auditor
+```
+Email: auditor@sistema.com
+Contraseña: 123456
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Inspector
+```
+Email: inspector@sistema.com
+Contraseña: 123456
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🛠️ Instalación y Uso
 
-## Learn More
+1. **Instalar dependencias:**
+```bash
+npm install
+```
 
-To learn more about Next.js, take a look at the following resources:
+2. **Ejecutar en desarrollo:**
+```bash
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. **Abrir en el navegador:**
+```
+http://localhost:3000
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+4. **Hacer build para producción:**
+```bash
+npm run build
+npm start
+```
 
-## Deploy on Vercel
+## 📁 Estructura del Proyecto
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+src/
+├── app/                    # App Router de Next.js
+│   ├── admin/             # Página de administración
+│   ├── dashboard/         # Dashboard principal
+│   ├── inspection/        # Página de inspección
+│   ├── maintenance/       # Página de mantenimiento
+│   ├── monthly-report/    # Página de reportes mensuales
+│   ├── reports/           # Página de reportes
+│   ├── vehicles/          # Página de vehículos
+│   ├── globals.css        # Estilos globales
+│   ├── layout.tsx         # Layout principal
+│   └── page.tsx           # Página de inicio
+├── components/            # Componentes React
+│   ├── Dashboard.tsx      # Componente del dashboard
+│   ├── DashboardLayout.tsx # Layout del dashboard
+│   ├── Inspection.tsx     # Componente de inspección
+│   ├── Login.tsx          # Componente de login
+│   ├── MonthlyReport.tsx  # Componente de reporte mensual
+│   └── Vehicles.tsx       # Componente de vehículos
+├── context/               # Context API
+│   └── AppContext.tsx     # Contexto principal
+└── types/                 # Tipos TypeScript
+    └── index.ts           # Definiciones de tipos
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🎨 Tecnologías Utilizadas
+
+- **Next.js 14** - Framework de React
+- **TypeScript** - Tipado estático
+- **Tailwind CSS** - Framework de CSS
+- **Lucide React** - Iconos
+- **Headless UI** - Componentes accesibles
+
+## 📱 Funcionalidades
+
+### Para Empresas (Administrador)
+- ✅ Dashboard personalizado con estadísticas
+- ✅ Gestión de vehículos (CRUD)
+- ✅ Registro de mantenimientos
+- ✅ Carga de reportes mensuales
+- ✅ Historial de reportes
+- ✅ Validación de 1 reporte por mes
+
+### Para Auditor
+- ✅ Vista de solo lectura
+- ✅ Acceso a toda la información
+- ✅ Reportes y consultas
+- ✅ Sin permisos de modificación
+
+### Para Inspector
+- ✅ Vista especializada de inspección
+- ✅ Información específica: Licencia, RTO, Cámaras, etc.
+- ✅ Alertas de vencimiento
+- ✅ Solo lectura
+
+## 🔧 Desarrollo
+
+El sistema está diseñado para ser escalable y mantenible:
+
+- **Componentes reutilizables** con TypeScript
+- **Context API** para manejo de estado global
+- **Tailwind CSS** para estilos consistentes
+- **App Router** de Next.js para navegación
+- **Responsive design** para todos los dispositivos
+
+## 📄 Licencia
+
+Este proyecto es un prototipo desarrollado para demostración del sistema de gestión de mantenimiento de transporte público.

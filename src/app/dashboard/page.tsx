@@ -2,18 +2,11 @@
 
 import { useApp } from '@/context/AppContext';
 import Login from '@/components/Login';
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import DashboardLayout from '@/components/DashboardLayout';
+import Dashboard from '@/components/Dashboard';
 
-export default function Home() {
+export default function DashboardPage() {
   const { user, isLoading } = useApp();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (user && !isLoading) {
-      router.push('/dashboard');
-    }
-  }, [user, isLoading, router]);
 
   if (isLoading) {
     return (
@@ -27,5 +20,9 @@ export default function Home() {
     return <Login />;
   }
 
-  return null;
+  return (
+    <DashboardLayout>
+      <Dashboard />
+    </DashboardLayout>
+  );
 }
