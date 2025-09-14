@@ -15,7 +15,7 @@ export default function Login() {
       alert('Por favor complete todos los campos');
       return;
     }
-    login(email, password);
+    login(email);
   };
 
   const fillLogin = (email: string, password: string) => {

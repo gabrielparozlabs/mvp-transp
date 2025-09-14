@@ -48,7 +48,7 @@ export default function MonthlyReportModal({ isOpen, onClose }: MonthlyReportMod
         uploadDate: new Date().toISOString(),
         status: 'completed',
         notes: formData.notes,
-        file: formData.file,
+        file: formData.file || undefined,
       });
 
       // Reset form

@@ -5,12 +5,12 @@ import { useApp } from '@/context/AppContext';
 import { Plus, Edit, Trash2, Search, Filter, Upload, FileText, X } from 'lucide-react';
 
 export default function MaintenanceBatch() {
-  const { user, maintenances, addMaintenance } = useApp();
+  const { maintenances, addMaintenance } = useApp();
   const [showForm, setShowForm] = useState(false);
   const [showExcelUpload, setShowExcelUpload] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
-  const [editingMaintenance, setEditingMaintenance] = useState<string | null>(null);
+  const [editingMaintenance] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     maintenanceBatch: '',
@@ -82,7 +82,14 @@ export default function MaintenanceBatch() {
     }));
   };
 
-  const handleVehicleChange = (vehicleIndex: number, field: string, value: string | number) => {
+  const handleVehicleChange = (vehicleIndex: number, field: string, value: string | number | Array<{
+    id: string;
+    article: string;
+    description: string;
+    quantity: number;
+    unitCost: number;
+    totalCost: number;
+  }>) => {
     const newVehicles = [...formData.vehicles];
     newVehicles[vehicleIndex] = {
       ...newVehicles[vehicleIndex],
@@ -90,9 +97,8 @@ export default function MaintenanceBatch() {
     };
     
     // Recalcular costo total del vehículo
-    if (field === 'supplies') {
-      const supplies = value as Array<any>;
-      newVehicles[vehicleIndex].vehicleCost = supplies.reduce((sum, supply) => sum + supply.totalCost, 0);
+    if (field === 'supplies' && Array.isArray(value)) {
+      newVehicles[vehicleIndex].vehicleCost = value.reduce((sum, supply) => sum + supply.totalCost, 0);
     }
     
     const newTotalCost = newVehicles.reduce((sum, vehicle) => sum + vehicle.vehicleCost, 0);

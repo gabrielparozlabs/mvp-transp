@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Plus, Eye, Edit, Trash2, Bus } from 'lucide-react';
+import { Plus, Eye, Edit, Trash2 } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import { Vehicle } from '@/types';
 

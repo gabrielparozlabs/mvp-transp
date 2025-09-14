@@ -5,34 +5,42 @@ import { useApp } from '@/context/AppContext';
 import { Plus, Edit, Trash2, Search, Filter } from 'lucide-react';
 
 export default function Maintenance() {
-  const { user, maintenances, addMaintenance } = useApp();
+  const { maintenances, addMaintenance } = useApp();
   const [showForm, setShowForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
-  const [editingMaintenance, setEditingMaintenance] = useState<string | null>(null);
+  const [editingMaintenance] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
-    vehicleId: '',
-    task: '',
+    maintenanceBatch: '',
+    workOrder: '',
+    workOrderDate: '',
     taskType: 'preventiva' as 'predictiva' | 'preventiva' | 'correctiva',
     workDefinition: '',
     startDate: '',
     endDate: '',
-    workOrder: '',
-    workOrderDate: '',
-    odometer: 0,
-    hourmeter: 0,
     place: '',
     mechanics: '',
-    supplies: [] as Array<{
+    vehicles: [] as Array<{
       id: string;
-      article: string;
-      description: string;
-      quantity: number;
-      unitCost: number;
-      totalCost: number;
+      vehicleId: string;
+      internalNumber: string;
+      licensePlate: string;
+      task: string;
+      odometer: number;
+      hourmeter: number;
+      supplies: Array<{
+        id: string;
+        article: string;
+        description: string;
+        quantity: number;
+        unitCost: number;
+        totalCost: number;
+      }>;
+      vehicleCost: number;
     }>,
     totalCost: 0,
+    notes: '',
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -43,72 +51,29 @@ export default function Maintenance() {
     }));
   };
 
-  const handleSupplyChange = (index: number, field: string, value: string | number) => {
-    const newSupplies = [...formData.supplies];
-    newSupplies[index] = {
-      ...newSupplies[index],
-      [field]: value
-    };
-    
-    // Recalcular costo total del artículo
-    if (field === 'quantity' || field === 'unitCost') {
-      newSupplies[index].totalCost = newSupplies[index].quantity * newSupplies[index].unitCost;
-    }
-    
-    setFormData(prev => ({
-      ...prev,
-      supplies: newSupplies,
-      totalCost: newSupplies.reduce((sum, supply) => sum + supply.totalCost, 0)
-    }));
-  };
-
-  const addSupply = () => {
-    setFormData(prev => ({
-      ...prev,
-      supplies: [...prev.supplies, {
-        id: Date.now().toString(),
-        article: '',
-        description: '',
-        quantity: 1,
-        unitCost: 0,
-        totalCost: 0
-      }]
-    }));
-  };
-
-  const removeSupply = (index: number) => {
-    const newSupplies = formData.supplies.filter((_, i) => i !== index);
-    setFormData(prev => ({
-      ...prev,
-      supplies: newSupplies,
-      totalCost: newSupplies.reduce((sum, supply) => sum + supply.totalCost, 0)
-    }));
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     addMaintenance(formData);
     setFormData({
-      vehicleId: '',
-      task: '',
+      maintenanceBatch: '',
+      workOrder: '',
+      workOrderDate: '',
       taskType: 'preventiva',
       workDefinition: '',
       startDate: '',
       endDate: '',
-      workOrder: '',
-      workOrderDate: '',
-      odometer: 0,
-      hourmeter: 0,
       place: '',
       mechanics: '',
-      supplies: [],
+      vehicles: [],
       totalCost: 0,
+      notes: '',
     });
     setShowForm(false);
   };
 
   const filteredMaintenances = maintenances.filter(maintenance => {
-    const matchesSearch = maintenance.task.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesSearch = maintenance.maintenanceBatch.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          maintenance.workDefinition.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesFilter = filterType === 'all' || maintenance.taskType === filterType;
     return matchesSearch && matchesFilter;
@@ -189,21 +154,19 @@ export default function Maintenance() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Información del vehículo */}
+            {/* Información del lote */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="form-group">
-                <label className="form-label">Vehículo *</label>
-                <select
-                  name="vehicleId"
-                  value={formData.vehicleId}
+                <label className="form-label">Número de Lote *</label>
+                <input
+                  type="text"
+                  name="maintenanceBatch"
+                  value={formData.maintenanceBatch}
                   onChange={handleInputChange}
-                  className="form-select"
+                  className="form-input"
+                  placeholder="Ej: MANT-2024-001"
                   required
-                >
-                  <option value="">Seleccionar vehículo</option>
-                  <option value="001">001 - ABC-123</option>
-                  <option value="002">002 - DEF-456</option>
-                </select>
+                />
               </div>
               <div className="form-group">
                 <label className="form-label">Tipo de Servicio *</label>
@@ -214,17 +177,17 @@ export default function Maintenance() {
               </div>
             </div>
 
-            {/* Información de la tarea */}
+            {/* Orden de trabajo */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="form-group">
-                <label className="form-label">Tarea *</label>
+                <label className="form-label">Orden de Trabajo *</label>
                 <input
                   type="text"
-                  name="task"
-                  value={formData.task}
+                  name="workOrder"
+                  value={formData.workOrder}
                   onChange={handleInputChange}
                   className="form-input"
-                  placeholder="Descripción de la tarea"
+                  placeholder="N° de Orden de Trabajo"
                   required
                 />
               </div>
@@ -301,46 +264,17 @@ export default function Maintenance() {
               </div>
             </div>
 
-            {/* Orden de trabajo */}
+            {/* Fecha de orden de trabajo */}
             <div className="form-group">
-              <label className="form-label">Orden de Trabajo *</label>
+              <label className="form-label">Fecha de Orden de Trabajo *</label>
               <input
-                type="text"
-                name="workOrder"
-                value={formData.workOrder}
+                type="date"
+                name="workOrderDate"
+                value={formData.workOrderDate}
                 onChange={handleInputChange}
                 className="form-input"
-                placeholder="N° de Orden de Trabajo"
                 required
               />
-            </div>
-
-            {/* Odómetro y Horómetro */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="form-group">
-                <label className="form-label">Odómetro (km) *</label>
-                <input
-                  type="number"
-                  name="odometer"
-                  value={formData.odometer}
-                  onChange={handleInputChange}
-                  className="form-input"
-                  placeholder="Kilometraje"
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Horómetro (horas) *</label>
-                <input
-                  type="number"
-                  name="hourmeter"
-                  value={formData.hourmeter}
-                  onChange={handleInputChange}
-                  className="form-input"
-                  placeholder="Tiempo de funcionamiento"
-                  required
-                />
-              </div>
             </div>
 
             {/* Lugar y mecánicos */}
@@ -371,89 +305,17 @@ export default function Maintenance() {
               </div>
             </div>
 
-            {/* Insumos */}
+            {/* Notas */}
             <div className="form-group">
-              <div className="flex justify-between items-center mb-4">
-                <label className="form-label">Insumos y Repuestos</label>
-                <button
-                  type="button"
-                  onClick={addSupply}
-                  className="btn btn-sm btn-primary"
-                >
-                  <Plus className="w-4 h-4 mr-1" />
-                  Agregar Insumo
-                </button>
-              </div>
-              
-              {formData.supplies.map((supply, index) => (
-                <div key={supply.id} className="grid grid-cols-1 md:grid-cols-6 gap-4 mb-4 p-4 border border-gray-200 rounded-lg">
-                  <div className="form-group">
-                    <label className="form-label text-xs">Artículo</label>
-                    <input
-                      type="text"
-                      value={supply.article}
-                      onChange={(e) => handleSupplyChange(index, 'article', e.target.value)}
-                      className="form-input text-sm"
-                      placeholder="N° inventario"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label text-xs">Descripción</label>
-                    <input
-                      type="text"
-                      value={supply.description}
-                      onChange={(e) => handleSupplyChange(index, 'description', e.target.value)}
-                      className="form-input text-sm"
-                      placeholder="Descripción del artículo"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label text-xs">Cantidad</label>
-                    <input
-                      type="number"
-                      value={supply.quantity}
-                      onChange={(e) => handleSupplyChange(index, 'quantity', Number(e.target.value))}
-                      className="form-input text-sm"
-                      min="1"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label text-xs">Costo Unitario</label>
-                    <input
-                      type="number"
-                      value={supply.unitCost}
-                      onChange={(e) => handleSupplyChange(index, 'unitCost', Number(e.target.value))}
-                      className="form-input text-sm"
-                      step="0.01"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label text-xs">Costo Total</label>
-                    <input
-                      type="number"
-                      value={supply.totalCost}
-                      className="form-input text-sm bg-gray-50"
-                      disabled
-                      step="0.01"
-                    />
-                  </div>
-                  <div className="form-group flex items-end">
-                    <button
-                      type="button"
-                      onClick={() => removeSupply(index)}
-                      className="btn btn-sm bg-red-100 text-red-600 hover:bg-red-200"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              ))}
-              
-              <div className="text-right">
-                <span className="text-lg font-semibold text-gray-900">
-                  Total: ${formData.totalCost.toFixed(2)}
-                </span>
-              </div>
+              <label className="form-label">Notas del Mantenimiento</label>
+              <textarea
+                name="notes"
+                value={formData.notes}
+                onChange={handleInputChange}
+                rows={3}
+                className="form-input"
+                placeholder="Notas adicionales sobre el mantenimiento..."
+              />
             </div>
 
             {/* Botones */}
@@ -496,10 +358,10 @@ export default function Maintenance() {
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Vehículo
+                    Lote
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Tarea
+                    Definición de Trabajo
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Tipo
@@ -519,10 +381,10 @@ export default function Maintenance() {
                 {filteredMaintenances.map((maintenance) => (
                   <tr key={maintenance.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {maintenance.vehicleId}
+                      {maintenance.maintenanceBatch}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {maintenance.task}
+                      {maintenance.workDefinition}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`status-badge ${

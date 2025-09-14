@@ -10,7 +10,7 @@ interface AppContextType {
   maintenances: Maintenance[];
   monthlyReports: MonthlyReport[];
   companies: Company[];
-  login: (email: string, password: string) => void;
+  login: (email: string) => void;
   logout: () => void;
   addVehicle: (vehicle: Omit<Vehicle, 'id'>) => void;
   addMaintenance: (maintenance: Omit<Maintenance, 'id'>) => void;
@@ -25,7 +25,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [maintenances, setMaintenances] = useState<Maintenance[]>([]);
   const [monthlyReports, setMonthlyReports] = useState<MonthlyReport[]>([]);
-  const [companies, setCompanies] = useState<Company[]>([
+  const [companies] = useState<Company[]>([
     {
       id: 'empresa1',
       name: 'Transporte Norte S.A.',
@@ -75,7 +75,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const login = (email: string, password: string) => {
+  const login = (email: string) => {
     const userInfo = detectRoleByEmail(email);
     const newUser = {
       email,

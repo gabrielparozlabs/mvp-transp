@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Upload, FileText, Download, Eye } from 'lucide-react';
+import { Upload, Download, Eye } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 
 export default function MonthlyReport() {
@@ -21,7 +21,7 @@ export default function MonthlyReport() {
         uploadDate: new Date().toLocaleDateString(),
         status: 'completed',
         notes: formData.notes,
-        file,
+        file: file || undefined,
       });
       setFormData({ month: '2024-01', notes: '' });
       setFile(null);
